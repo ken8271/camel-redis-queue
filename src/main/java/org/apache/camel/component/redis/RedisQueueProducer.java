@@ -2,7 +2,7 @@ package org.apache.camel.component.redis;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultProducer;
-import org.springframework.data.redis.core.ListOperations;
+import org.redisson.api.RBlockingQueue;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -11,19 +11,16 @@ import com.alibaba.fastjson.JSONObject;
  */
 public class RedisQueueProducer extends DefaultProducer {
     
-    private RedisQueueConfiguration configuration;
-    
-    private ListOperations<String, String> operation;
+    private RBlockingQueue<String> queue;
 
-    public RedisQueueProducer(RedisQueueEndpoint endpoint , RedisQueueConfiguration configuration) {
+    public RedisQueueProducer(RedisQueueEndpoint endpoint , RBlockingQueue<String> queue) {
         super(endpoint);
-        this.configuration = configuration;
-        this.operation = configuration.getRedisTemplate().opsForList();
+        this.queue = queue;
     }
 
     public void process(Exchange exchange) throws Exception {
     	if(exchange != null && exchange.getIn().getBody() != null)
-    		operation.leftPush(configuration.getChannel(), JSONObject.toJSONString(exchange.getIn().getBody()));
+    		this.queue.put(JSONObject.toJSONString(exchange.getIn().getBody()));
     	else
     		throw new IllegalArgumentException("the message body could not be null");
     }

@@ -4,7 +4,7 @@ import org.apache.camel.spi.Metadata;
 import org.apache.camel.spi.UriParam;
 import org.apache.camel.spi.UriParams;
 import org.apache.camel.spi.UriPath;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.redisson.api.RedissonClient;
 
 @UriParams
 public class RedisQueueConfiguration {
@@ -13,7 +13,7 @@ public class RedisQueueConfiguration {
 	private String channel;
 	
 	@UriParam
-	private RedisTemplate<String, String> redisTemplate;
+	private RedissonClient redisson;
 
 	public String getChannel() {
 		return channel;
@@ -23,12 +23,12 @@ public class RedisQueueConfiguration {
 		this.channel = channel;
 	}
 
-	public RedisTemplate<String, String> getRedisTemplate() {
-		return redisTemplate;
+	public RedissonClient getRedisson() {
+		return redisson;
 	}
 
-	public void setRedisTemplate(RedisTemplate<String, String> redisTemplate) {
-		this.redisTemplate = redisTemplate;
+	public void setRedisson(RedissonClient redisson) {
+		this.redisson = redisson;
 	}
-
+	
 }
