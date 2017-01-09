@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.impl.DefaultConsumer;
+import org.redisson.RedissonShutdownException;
 import org.redisson.api.RBlockingQueue;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
@@ -52,6 +53,9 @@ public class RedisQueueConsumer extends DefaultConsumer implements Runnable {
     				throws Exception {
     			if(!future.isSuccess()){
 					logger.error("[doPull] - fail to pull message from redis." , future.cause());
+					if (future.cause() instanceof RedissonShutdownException) {
+                        return;
+                    }
 					doPull();
 					return ;
 				}

@@ -19,14 +19,17 @@ public class RedisQueueEndpoint extends DefaultEndpoint {
 	
 	private RBlockingQueue<String> queue;
 	
+	private int timeout;
+	
     public RedisQueueEndpoint(String uri, RedisQueueComponent component , RedisQueueConfiguration configuration) {
         super(uri, component);
+        this.timeout = configuration.getTimeout();
         this.redisson = configuration.getRedisson();
         this.queue = redisson.getBlockingQueue(configuration.getChannel(), new StringCodec("UTF-8"));
     }
     
     public Producer createProducer() throws Exception {
-        return new RedisQueueProducer(this , queue);
+        return new RedisQueueProducer(this , queue , timeout);
     }
 
     public Consumer createConsumer(Processor processor) throws Exception {

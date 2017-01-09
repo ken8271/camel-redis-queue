@@ -12,6 +12,9 @@ public class RedisQueueConfiguration {
 	@UriPath  @Metadata(required = "true")
 	private String channel;
 	
+	@UriParam(defaultValue="2000")
+	private int timeout;
+	
 	@UriParam
 	private RedissonClient redisson;
 
@@ -21,6 +24,14 @@ public class RedisQueueConfiguration {
 
 	public void setChannel(String channel) {
 		this.channel = channel;
+	}
+
+	public int getTimeout() {
+		return timeout;
+	}
+
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
 	}
 
 	public RedissonClient getRedisson() {
